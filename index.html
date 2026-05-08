@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DadMode - Your Pregnancy Companion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0d1b2a;
+    --navy-mid: #1a2d42;
+    --navy-light: #243b55;
+    --gold: #f5a623;
+    --gold-light: #ffc55a;
+    --gold-dim: rgba(245,166,35,0.15);
+    --cream: #f2ede4;
+    --cream-dim: rgba(242,237,228,0.7);
+    --cream-faint: rgba(242,237,228,0.15);
+    --text: #e8e0d4;
+    --text-muted: rgba(232,224,212,0.6);
+    --card: rgba(26,45,66,0.8);
+    --card-border: rgba(245,166,35,0.18);
+    --radius: 18px;
+    --radius-sm: 10px;
+    --glow: 0 0 30px rgba(245,166,35,0.12);
+    --glow-strong: 0 0 40px rgba(245,166,35,0.25);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background stars */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      radial-gradient(1px 1px at 20% 30%, rgba(245,166,35,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 80% 15%, rgba(255,255,255,0.15) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 70%, rgba(245,166,35,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 10% 80%, rgba(255,255,255,0.1) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 60%, rgba(245,166,35,0.3) 0%, transparent 100%),
+      radial-gradient(2px 2px at 45% 10%, rgba(255,255,255,0.08) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 40%, rgba(245,166,35,0.2) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page { position: relative; z-index: 1; }
+
+  /* ==================== ONBOARDING ==================== */
+  #onboarding {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem 1.5rem;
+    text-align: center;
+  }
+
+  .logo-icon {
+    font-size: 4rem;
+    animation: pulse 3s ease-in-out infinite;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 0 20px rgba(245,166,35,0.5));
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(245,166,35,0.5)); }
+    50% { transform: scale(1.08); filter: drop-shadow(0 0 35px rgba(245,166,35,0.8)); }
+  }
+
+  .logo-title {
+    font-family: 'Fraunces', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--cream);
+    letter-spacing: -0.5px;
+    line-height: 1;
+  }
+
+  .logo-title span { color: var(--gold); }
+
+  .logo-sub {
+    font-size: 1rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+  }
+
+  .onboarding-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    width: 100%;
+    max-width: 420px;
+    margin-top: 2.5rem;
+    box-shadow: var(--glow);
+    backdrop-filter: blur(10px);
+  }
+
+  .onboarding-card h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem;
+    color: var(--cream);
+    margin-bottom: 0.5rem;
+  }
+
+  .onboarding-card p {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: 1.75rem;
+    line-height: 1.6;
+  }
+
+  .option-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    background: rgba(0,0,0,0.2);
+    border-radius: var(--radius-sm);
+    padding: 4px;
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 0.65rem 0.5rem;
+    border: none;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s;
+    background: transparent;
+    color: var(--text-muted);
+  }
+
+  .tab-btn.active {
+    background: var(--gold);
+    color: var(--navy);
+  }
+
+  .date-input-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .date-input-wrap label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .date-input-wrap input[type="date"] {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(245,166,35,0.25);
+    border-radius: var(--radius-sm);
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.2s;
+    -webkit-appearance: none;
+    color-scheme: dark;
+  }
+
+  .date-input-wrap input[type="date"]:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(245,166,35,0.1);
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--navy);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s;
+    letter-spacing: 0.02em;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 25px rgba(245,166,35,0.35);
+  }
+
+  .btn-primary:active { transform: translateY(0); }
+
+  /* ==================== DASHBOARD ==================== */
+  #dashboard { display: none; padding-bottom: 3rem; }
+
+  .dash-header {
+    background: linear-gradient(180deg, rgba(13,27,42,0.95) 0%, rgba(13,27,42,0) 100%);
+    padding: 1.5rem 1.5rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(8px);
+  }
+
+  .dash-logo {
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--cream);
+  }
+
+  .dash-logo span { color: var(--gold); }
+
+  .btn-reset {
+    background: transparent;
+    border: 1px solid rgba(245,166,35,0.3);
+    color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-reset:hover { border-color: var(--gold); color: var(--gold); }
+
+  .dash-hero {
+    padding: 1.5rem 1.5rem 0;
+    text-align: center;
+  }
+
+  .week-badge-wrap { position: relative; display: inline-block; margin-bottom: 1.5rem; }
+
+  .week-number-big {
+    font-family: 'Fraunces', serif;
+    font-size: 5.5rem;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+    filter: drop-shadow(0 0 25px rgba(245,166,35,0.4));
+  }
+
+  .week-label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+    margin-top: -0.25rem;
+  }
+
+  .trimester-badge {
+    display: inline-block;
+    padding: 0.3rem 0.9rem;
+    background: var(--gold-dim);
+    border: 1px solid rgba(245,166,35,0.35);
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--gold);
+    margin-top: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .progress-section {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-bottom: 0.6rem;
+  }
+
+  .progress-bar-track {
+    height: 8px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    border-radius: 4px;
+    width: 0%;
+    transition: width 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 0 10px rgba(245,166,35,0.5);
+  }
+
+  .trimester-markers {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.4rem;
+  }
+
+  .t-marker {
+    font-size: 0.65rem;
+    color: rgba(245,166,35,0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Cards */
+  .section-pad { padding: 0 1.5rem; }
+
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem;
+    color: var(--cream);
+    margin-bottom: 1rem;
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  .week-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--glow);
+    backdrop-filter: blur(10px);
+  }
+
+  .week-card.highlight {
+    border-color: rgba(245,166,35,0.4);
+    box-shadow: var(--glow-strong);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .baby-icon { font-size: 3rem; animation: pulse 3s ease-in-out infinite; }
+
+  .card-header-text h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem;
+    color: var(--cream);
+    font-weight: 600;
+  }
+
+  .baby-size {
+    font-size: 0.85rem;
+    color: var(--gold);
+    font-weight: 500;
+    margin-top: 0.15rem;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .info-block {
+    background: rgba(0,0,0,0.2);
+    border-radius: var(--radius-sm);
+    padding: 0.85rem;
+  }
+
+  .info-block-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+  }
+
+  .info-block-text {
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: var(--text);
+  }
+
+  .dad-tip {
+    background: var(--gold-dim);
+    border: 1px solid rgba(245,166,35,0.25);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .dad-tip-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .dad-tip-text {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--cream);
+  }
+
+  .hormone-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.7rem 0.85rem;
+    background: rgba(0,0,0,0.2);
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+  }
+
+  .hormone-level {
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+
+  .hl-high { background: rgba(220,60,60,0.25); color: #ff8080; border: 1px solid rgba(220,60,60,0.3); }
+  .hl-medium { background: rgba(245,166,35,0.2); color: var(--gold); border: 1px solid rgba(245,166,35,0.3); }
+  .hl-low { background: rgba(80,180,120,0.2); color: #7ed8a4; border: 1px solid rgba(80,180,120,0.3); }
+
+  .hormone-note { color: var(--text-muted); line-height: 1.4; }
+
+  /* ==================== TIMELINE ==================== */
+  .timeline-section { padding: 1.5rem 1.5rem 0; }
+
+  .timeline-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem;
+    color: var(--cream);
+    margin-bottom: 1rem;
+    font-style: italic;
+  }
+
+  .timeline-scroller {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .timeline-scroller::-webkit-scrollbar { display: none; }
+
+  .t-week-pill {
+    flex-shrink: 0;
+    width: 56px;
+    padding: 0.6rem 0;
+    background: rgba(26,45,66,0.6);
+    border: 1px solid rgba(245,166,35,0.12);
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .t-week-pill:hover {
+    border-color: rgba(245,166,35,0.4);
+    background: rgba(26,45,66,0.9);
+  }
+
+  .t-week-pill.current {
+    background: var(--gold-dim);
+    border-color: var(--gold);
+    box-shadow: 0 0 15px rgba(245,166,35,0.2);
+  }
+
+  .t-week-pill.past {
+    opacity: 0.5;
+  }
+
+  .t-pill-num {
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem;
+    color: var(--cream);
+    display: block;
+  }
+
+  .t-week-pill.current .t-pill-num { color: var(--gold); }
+
+  .t-pill-icon { font-size: 1rem; display: block; }
+
+  .t-pill-label {
+    font-size: 0.55rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: block;
+    margin-top: 0.15rem;
+  }
+
+  /* ==================== MODAL / DETAIL VIEW ==================== */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(5,12,20,0.85);
+    z-index: 200;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .modal-sheet {
+    background: #1a2d42;
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    width: 100%;
+    max-width: 540px;
+    padding: 1.5rem;
+    max-height: 88vh;
+    overflow-y: auto;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.34, 1.2, 0.64, 1);
+    border-top: 1px solid rgba(245,166,35,0.2);
+    scrollbar-width: none;
+  }
+
+  .modal-overlay.open .modal-sheet {
+    transform: translateY(0);
+  }
+
+  .modal-handle {
+    width: 40px;
+    height: 4px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 2px;
+    margin: 0 auto 1.25rem;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(0,0,0,0.3);
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Days countdown */
+  .stats-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.75rem;
+    padding: 0 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .stat-block {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-sm);
+    padding: 1rem 0.75rem;
+    text-align: center;
+  }
+
+  .stat-number {
+    font-family: 'Fraunces', serif;
+    font-size: 1.6rem;
+    color: var(--gold);
+    display: block;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 0.25rem;
+    display: block;
+  }
+
+  /* Animations */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-in { animation: fadeInUp 0.4s ease forwards; }
+
+  @media (max-width: 400px) {
+    .week-number-big { font-size: 4.5rem; }
+    .logo-title { font-size: 2.5rem; }
+    .info-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== ONBOARDING ==================== -->
+<div id="onboarding" class="page">
+  <div class="logo-icon">👶</div>
+  <div class="logo-title">Dad<span>Mode</span></div>
+  <div class="logo-sub">Your pregnancy companion, built for you</div>
+
+  <div class="onboarding-card animate-in">
+    <h2>Let's get you set up</h2>
+    <p>Track your partner's pregnancy week-by-week with insights made for dads — not doctors.</p>
+
+    <div class="option-tabs">
+      <button class="tab-btn active" onclick="switchTab('lmp')">Last Period Date</button>
+      <button class="tab-btn" onclick="switchTab('due')">Due Date</button>
+    </div>
+
+    <div id="lmp-input" class="date-input-wrap">
+      <label>First Day of Last Period</label>
+      <input type="date" id="lmp-date" />
+    </div>
+
+    <div id="due-input" class="date-input-wrap" style="display:none">
+      <label>Estimated Due Date</label>
+      <input type="date" id="due-date" />
+    </div>
+
+    <button class="btn-primary" onclick="startApp()">Let's Go →</button>
+  </div>
+</div>
+
+<!-- ==================== DASHBOARD ==================== -->
+<div id="dashboard" class="page">
+  <div class="dash-header">
+    <div class="dash-logo">Dad<span>Mode</span></div>
+    <button class="btn-reset" onclick="resetApp()">↩ Reset</button>
+  </div>
+
+  <div class="dash-hero">
+    <div class="week-number-big" id="current-week-num">--</div>
+    <div class="week-label">WEEKS PREGNANT</div>
+    <div class="trimester-badge" id="trimester-badge">--</div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-block">
+      <span class="stat-number" id="days-left">--</span>
+      <span class="stat-label">Days Left</span>
+    </div>
+    <div class="stat-block">
+      <span class="stat-number" id="days-done">--</span>
+      <span class="stat-label">Days In</span>
+    </div>
+    <div class="stat-block">
+      <span class="stat-number" id="pct-done">--%</span>
+      <span class="stat-label">Complete</span>
+    </div>
+  </div>
+
+  <div class="progress-section">
+    <div class="progress-meta">
+      <span>Week 1</span>
+      <span id="due-date-label">Due --/--</span>
+    </div>
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" id="prog-fill"></div>
+    </div>
+    <div class="trimester-markers">
+      <span class="t-marker">T1 wk 1-13</span>
+      <span class="t-marker">T2 wk 14-26</span>
+      <span class="t-marker">T3 wk 27-40</span>
+    </div>
+  </div>
+
+  <div class="section-pad">
+    <div class="section-title">This week</div>
+    <div id="current-week-card" class="week-card highlight"></div>
+  </div>
+
+  <div class="timeline-section">
+    <div class="timeline-title">All 40 Weeks</div>
+    <div class="timeline-scroller" id="timeline-scroller"></div>
+  </div>
+</div>
+
+<!-- ==================== WEEK DETAIL MODAL ==================== -->
+<div class="modal-overlay" id="week-modal" onclick="closeModalOutside(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div id="modal-content"></div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+  </div>
+</div>
+
+<script>
+// ==================== WEEK DATA ====================
+const weekData = [
+  { week: 1, icon: '🌿', size: 'A poppy seed', baby: "Fertilization hasn't happened yet — this is technically pre-pregnancy. Your partner's body is gearing up, releasing hormones to prepare for ovulation.", partner: "Light spotting or cramping may occur. Her body doesn't know it yet — but the journey is beginning.", dadTip: "Start a conversation about what you both want from this pregnancy. Set the tone early — presence over perfection.", hormone: { level: 'low', note: 'Estrogen and progesterone are at baseline. Mood is relatively stable.' } },
+  { week: 2, icon: '🌾', size: 'A sesame seed', baby: "Ovulation happens this week. The egg is released and can be fertilized for 12-24 hours. Conception most likely occurs now.", partner: "She may feel a slight twinge (Mittelschmerz) during ovulation. Increased cervical mucus is normal.", dadTip: "Be supportive and patient. Whether you're trying or just found out — your calm energy matters more than you know.", hormone: { level: 'medium', note: 'LH surges to trigger ovulation. She may feel slightly more energetic or amorous.' } },
+  { week: 3, icon: '🌾', size: 'A grain of rice', baby: "The blastocyst is travelling down the fallopian tube toward the uterus. Cell division is happening rapidly — a tiny miracle in progress.", partner: "No noticeable symptoms yet, though some women feel mild bloating or cramping as implantation begins.", dadTip: "If you know you're trying — keep stress low for both of you. A relaxed environment helps implantation.", hormone: { level: 'medium', note: 'hCG is just beginning to rise. The pregnancy hormone is making its first appearance.' } },
+  { week: 4, icon: '🔵', size: 'A poppy seed (visible)', baby: "Implantation is complete. The embryo is officially attached to the uterine wall. The neural tube (future brain and spine) is beginning to form.", partner: "Implantation bleeding (light spotting) may occur. Breast tenderness, fatigue, and mild nausea may begin.", dadTip: "Grab a pregnancy test together if you haven't confirmed yet. The moment you see those two lines — let it land.", hormone: { level: 'high', note: 'hCG doubles every 48 hours. This is what pregnancy tests detect. She may feel off before she knows why.' } },
+  { week: 5, icon: '🍏', size: 'An apple seed', baby: "The heart begins to beat this week — around 80-85 bpm. The embryo looks like a tiny tadpole. Brain, spinal cord, and heart are forming rapidly.", partner: "Morning sickness often hits hard this week. Fatigue can be extreme. She may be more emotional than usual.", dadTip: "Morning sickness can strike any time of day. Have crackers by the bed and avoid cooking strong-smelling foods without asking first.", hormone: { level: 'high', note: 'Progesterone and hCG are surging. She may feel constantly exhausted — this is normal and necessary.' } },
+  { week: 6, icon: '🫛', size: 'A sweet pea', baby: "Facial features are beginning to form — tiny buds where eyes, nose, and ears will be. Arm and leg buds appear. The heart has divided into chambers.", partner: "Nausea peaks for many women this week. Heightened sense of smell. Food aversions are common and intense.", dadTip: "Don't take food aversions personally — if she can't stand the smell of your favorite meal, adapt without complaint. Her nose is basically a superpower right now.", hormone: { level: 'high', note: 'Estrogen is ramping up. She may swing between emotions quickly. Validate, don\'t solve.' } },
+  { week: 7, icon: '🫐', size: 'A blueberry', baby: "Hands and feet are emerging from the limb buds. The brain is growing at roughly 100 new cells per minute. Eyelid folds are forming.", partner: "Frequent urination begins as the uterus grows. Heightened emotions, mood swings, bloating, and constipation.", dadTip: "If she's struggling with nausea, ginger tea, vitamin B6, and small frequent meals genuinely help. Be proactive — don't wait to be asked.", hormone: { level: 'high', note: 'hCG is at its pregnancy peak around weeks 7-11. Expect the most intense symptoms in this window.' } },
+  { week: 8, icon: '🫘', size: 'A kidney bean', baby: "All major organs are forming. The embryo officially becomes a fetus this week. Fingers and toes are beginning to distinguish from webbed form.", partner: "Fatigue may feel debilitating — growing a human takes massive energy. Round ligament pain may begin.", dadTip: "Handle household tasks without being asked. Cook simple meals she can tolerate. Your consistency right now is an act of love.", hormone: { level: 'high', note: 'Progesterone keeps the uterus relaxed and prevents early contractions. She may feel unusually warm and tired.' } },
+  { week: 9, icon: '🍇', size: 'A grape', baby: "The fetus now has distinct fingers and toes. Reproductive organs are forming, though it's still too early to determine sex. Facial features are more defined.", partner: "Nausea may still be strong. Breast growth continues — she may need new bras sooner than expected. Emotional sensitivity is heightened.", dadTip: "Compliment her genuinely — her body is working harder than it ever has. Make her feel seen, not just supported.", hormone: { level: 'high', note: 'High hCG and progesterone continue. Emotional swings are hormonally driven, not personal.' } },
+  { week: 10, icon: '🍓', size: 'A strawberry', baby: "All vital organs are formed and functioning (or developing). The fetus can make small movements, though she won't feel them yet. Nails are starting to grow.", partner: "Visible veins on breasts. Mood may feel more intense. Some women experience spotting — usually harmless but always worth mentioning to the doctor.", dadTip: "First prenatal appointment is often around now. Go with her if at all possible — hearing the heartbeat for the first time is something you should not miss.", hormone: { level: 'high', note: 'Still near peak hCG. Physical symptoms remain strong. The end of the first trimester tunnel is in sight.' } },
+  { week: 11, icon: '🍈', size: 'A lime', baby: "The fetus is now about 1.6 inches long. Tooth buds are forming. Fingers and toes are fully separated. She can hiccup (how cute is that?).", partner: "Nausea may start to ease slightly. Uterus begins to rise out of the pelvis. Waistband may feel tighter.", dadTip: "Talk to the baby. It sounds weird, but the fetus can eventually hear voices and yours matters. Start early.", hormone: { level: 'high', note: 'hCG begins to plateau. The placenta is taking over hormone production — the worst of nausea may start to lift.' } },
+  { week: 12, icon: '🍇', size: 'A plum', baby: "The most critical development phase is nearly complete. Brain, spinal cord, and organs are formed. The fetus is developing reflexes — touching the lips triggers a sucking reflex.", partner: "For many women, nausea starts to ease after week 12. Energy may return. The bump becomes slightly visible.", dadTip: "Share the news if you're ready — week 12 is the traditional 'safe' announcement milestone after the miscarriage risk drops significantly.", hormone: { level: 'medium', note: 'hCG peaks and begins to fall as the placenta takes over. Her mood may stabilize noticeably.' } },
+  { week: 13, icon: '🍑', size: 'A peach', baby: "Fingerprints are forming. The fetus can make facial expressions. Bone is replacing cartilage throughout the skeleton. Intestines are moving into the abdomen.", partner: "Welcome to the second trimester! Energy often improves. Nausea fades for most. The 'pregnancy glow' phase is beginning.", dadTip: "Celebrate the end of the first trimester — it's been a hard 12 weeks, especially for her. Acknowledge it. She's been quietly heroic.", hormone: { level: 'medium', note: 'Hormone levels are evening out. Expect a more emotionally stable and energetic partner over the coming weeks.' } },
+  { week: 14, icon: '🍋', size: 'A lemon', baby: "The fetus can squint, frown, and grimace. Lanugo (fine hair) is beginning to cover the body. The thyroid gland is working and producing hormones of its own.", partner: "The second trimester honeymoon begins. More energy, reduced nausea, improved mood. Libido may increase — this is completely normal.", dadTip: "Plan a date night or a weekend away if you can. The second trimester is the sweet spot — lean into it while you have the chance.", hormone: { level: 'medium', note: 'Estrogen is rising gradually. Expect more energy and possibly a higher libido. Enjoy this phase.' } },
+  { week: 15, icon: '🍎', size: 'An apple', baby: "The fetus is moving vigorously though she still can't feel it. Taste buds are developing. Bones are getting stronger — the fetus can make a fist.", partner: "Round ligament pain (sharp twinges on the sides of the abdomen) is common as the uterus grows. Heartburn may start.", dadTip: "If she mentions round ligament pain, it sounds scarier than it is — but take it seriously. Rest, gentle movement, and no heavy lifting for her.", hormone: { level: 'medium', note: 'Relatively stable. Progesterone continues to relax ligaments and smooth muscle — which can cause heartburn and back pain.' } },
+  { week: 16, icon: '🥑', size: 'An avocado', baby: "The heart pumps 25 quarts of blood per day. The fetus is practicing breathing by inhaling amniotic fluid. Ultrasound can now show a sucking thumb.", partner: "The baby bump is now visible to most people. She may start getting comments from strangers — ask how she wants you to handle that.", dadTip: "Ask your partner how she wants to handle unsolicited belly touches and comments. Have her back publicly if she sets limits.", hormone: { level: 'medium', note: 'Estrogen continues to rise. Skin may glow — increased blood volume gives that "radiant" look.' } },
+  { week: 17, icon: '🍐', size: 'A pear', baby: "The fetus can hear now — loud sounds may startle it. Fat deposits are forming under the skin. Sweat glands are developing.", partner: "Back pain becomes more common as the center of gravity shifts. She may have trouble sleeping and finding a comfortable position.", dadTip: "Invest in a pregnancy pillow. Seriously — it's one of the best things you can buy. Also: back rubs are never not appropriate.", hormone: { level: 'medium', note: 'Estrogen continues steady rise. She may experience nasal congestion due to increased blood flow — a common but annoying symptom.' } },
+  { week: 18, icon: '🍠', size: 'A sweet potato', baby: "The ears are now in final position. The fetus yawns and can recognize your voice. Myelin (nerve coating) is beginning to form, which will speed up nerve signals.", partner: "Many women feel the first flutter of movement this week — like butterflies or popcorn popping. Skin changes: darker areolas, linea nigra may appear.", dadTip: "Ask her to describe the first kick or flutter. Listen fully. This is one of those moments — be present for it even if you can't feel it yet.", hormone: { level: 'medium', note: 'Progesterone keeps the uterus calm. Melanin increases may cause skin darkening. This is normal and temporary.' } },
+  { week: 19, icon: '🥭', size: 'A mango', baby: "A protective coating (vernix caseosa) is forming over the skin. The fetus has a regular sleep/wake cycle. Sensory development is accelerating.", partner: "Round ligament pain may intensify. Varicose veins and hemorrhoids are possible. Balance and coordination may feel slightly off.", dadTip: "The anatomy scan (20-week ultrasound) is coming up. Make every effort to attend — this is the big one where you often find out the sex.", hormone: { level: 'medium', note: 'Relatively stable. Some women experience a hormone-driven burst of emotion around this time as the baby starts feeling real.' } },
+  { week: 20, icon: '🍌', size: 'A banana', baby: "Halfway there! The fetus is about 10 inches crown to heel. Movements are more coordinated. All major organs are functioning. Gender can typically be confirmed by ultrasound.", partner: "The 20-week anatomy scan happens this week. She may be feeling strong kicks now. Heartburn and leg cramps are common.", dadTip: "This is the big anatomy scan — find out the sex if you want to, check that everything is developing normally. Bring tissues. Just in case.", hormone: { level: 'medium', note: 'Hormones are in a relatively balanced second-trimester state. Enjoy the relative stability.' } },
+  { week: 21, icon: '🥕', size: 'A carrot', baby: "The fetus is now covered in more vernix. Eyebrows and eyelashes are visible. If it's a girl, the vagina is fully formed. If it's a boy, testes are beginning to descend.", partner: "She can clearly feel fetal movements now. Braxton Hicks contractions may begin (practice contractions — harmless). Belly button may pop out.", dadTip: "Place your hand on her belly and wait. You may start to feel movement from the outside. This is the moment it gets viscerally real for dads.", hormone: { level: 'medium', note: 'Estrogen and progesterone are steady. She may feel more energetic and confident — the second trimester peak.' } },
+  { week: 22, icon: '🌽', size: 'An ear of corn', baby: "The sense of touch is developing — the fetus grabs the umbilical cord and explores its face. Brain development is rapid. Eyes are formed but eyelids are still fused.", partner: "Possible stretch marks as the belly expands. Linea nigra darkens. Outie belly button. She's clearly pregnant to everyone now.", dadTip: "Moisturize her belly if she wants — make it a ritual rather than a chore. It's intimate and practical.", hormone: { level: 'medium', note: 'Levels are holding steady. She may experience a strong sense of connection to the baby as movements become regular.' } },
+  { week: 23, icon: '🍆', size: 'An eggplant', baby: "The fetus weighs about a pound now. Fingerprints and footprints are fully formed. It can hear conversations and music — and will respond to familiar voices.", partner: "Increased appetite. Possible swelling in feet and ankles. Braxton Hicks may be more noticeable. Back pain intensifies.", dadTip: "Start talking and reading to the belly regularly. The fetus recognizes voices it hears in the womb — this is your earliest bonding window.", hormone: { level: 'medium', note: 'Stable, but relaxin (the ligament-loosening hormone) is increasing. She may feel physically uncomfortable more frequently.' } },
+  { week: 24, icon: '🌽', size: 'A full ear of corn', baby: "Viability milestone — if born now, the baby has a chance of survival with medical support. Lungs are developing rapidly. The fetus is gaining about 6 oz per week.", partner: "Glucose screening test happens this week (gestational diabetes check). Possible linea nigra, melasma (skin darkening). Fatigue may increase.", dadTip: "Week 24 is the viability milestone — emotionally significant for many couples. Check in with her about how she's feeling about it all.", hormone: { level: 'medium', note: 'Insulin resistance increases slightly (preparing for gestational diabetes screening). She may notice more fatigue after meals.' } },
+  { week: 25, icon: '🥦', size: 'A head of broccoli', baby: "The fetus responds to touch — pressing on the belly may get a kick back. Hair is growing. Fat continues to fill in under the skin, making the fetus look less translucent.", partner: "Heartburn and indigestion are common. Sleep is getting harder. She may experience restless leg syndrome. The third trimester is approaching.", dadTip: "Research childbirth classes now if you haven't. Most recommend starting around week 28-30. You should both take one.", hormone: { level: 'medium', note: 'Progesterone peaks start to plateau. The discomforts are mostly physical now rather than hormonal — but be patient regardless.' } },
+  { week: 26, icon: '🥒', size: 'A cucumber', baby: "Eyes are beginning to open for the first time. The fetus blinks and responds to light. It can hear music and voices clearly. Brain wave activity begins for hearing and sight.", partner: "Her uterus is now about 2.5 inches above the belly button. Braxton Hicks are more frequent. Sciatica pain may develop.", dadTip: "Play music near the belly — studies suggest babies respond to music they hear in the womb after birth. Start a playlist now.", hormone: { level: 'medium', note: 'Estrogen levels continue steady rise. She may start nesting behaviors — don\'t fight it, join it.' } },
+  { week: 27, icon: '🥦', size: 'A cauliflower', baby: "Welcome to the third trimester! The fetus sleeps and wakes on a regular schedule. Brain tissue is developing rapidly. It can dream during REM sleep.", partner: "Third trimester begins. Discomforts intensify: shortness of breath, heartburn, frequent urination. Anxiety about labor may surface.", dadTip: "Have an honest conversation about birth plans, fears, and expectations. Don't wait until labor to figure out what you both want.", hormone: { level: 'medium-high', note: 'Cortisol (stress hormone) begins to rise. She may feel more anxious and overwhelmed. This is biological, not irrational.' } },
+  { week: 28, icon: '🍆', size: 'A large eggplant', baby: "The brain is developing surface grooves for complex functioning. The fetus can blink open eyes and responds to light. Lungs continue maturing.", partner: "Third trimester check-ups become biweekly. She may feel huge and uncomfortable. Colostrum (early breast milk) may start leaking.", dadTip: "Research your hospital's check-in process, parking, and policies now — before it's an emergency. Preparation is your love language right now.", hormone: { level: 'medium-high', note: 'Prolactin is rising in preparation for milk production. She may be thinking about breastfeeding and support is key.' } },
+  { week: 29, icon: '🎃', size: 'A small pumpkin', baby: "The fetus moves vigorously — kicks, rolls, jabs. Muscle and lung development is accelerating. The skeleton is hardening, requiring lots of calcium.", partner: "She may feel the baby's hiccups. Pelvic pressure increases. Walking may become uncomfortable. Varicose veins worsen.", dadTip: "Take on more physical tasks around the house without being asked. Grocery runs, heavy lifting, standing in lines — these fall to you now.", hormone: { level: 'medium-high', note: 'Relaxin continues loosening pelvic joints in preparation for birth. She may waddle slightly — this is biology, not comedy.' } },
+  { week: 30, icon: '🥬', size: 'A head of cabbage', baby: "The fetus has a 10% body fat now. Its fingernails are growing. The brain is developing billions of neurons. It can distinguish light from dark through the uterine wall.", partner: "Braxton Hicks are more regular. Sleep is increasingly difficult. She may feel baby hiccups daily. Acid reflux can be intense.", dadTip: "Prepare the hospital bag together this week. Having it ready removes a layer of panic when labor actually starts.", hormone: { level: 'medium-high', note: 'Estrogen peak is approaching. She may have vivid, intense dreams. Don\'t read into the content — it\'s just hormone-fueled brain activity.' } },
+  { week: 31, icon: '🥥', size: 'A coconut', baby: "Major development is mostly complete — the remaining weeks are about growth and finishing touches. The fetus turns head-down in preparation for birth.", partner: "Extreme fatigue returns. Swollen feet and ankles. Shortness of breath as the uterus pushes up on the diaphragm. Emotional nesting mode intensifies.", dadTip: "Check in emotionally — she may be feeling anxious about labor and new parenthood. Listen first. Don't jump to solutions.", hormone: { level: 'high', note: 'Cortisol rises as the due date approaches. Labor prep hormones are beginning. She may oscillate between excitement and terror.' } },
+  { week: 32, icon: '🥔', size: 'A large potato', baby: "The fetus drinks about a pint of amniotic fluid per day and urinates the same amount. Toenails are fully formed. Brain and nervous system are nearly complete.", partner: "She may feel the baby drop or engage (lightening). Pelvic pressure increases but breathing eases. Colostrum production increases.", dadTip: "Attend any remaining prenatal appointments. Start finalizing the nursery — nesting is real and you should be part of it.", hormone: { level: 'high', note: 'Oxytocin (the bonding hormone) is beginning to ramp up. Her emotional connection to the baby is at its peak.' } },
+  { week: 33, icon: '🍍', size: 'A pineapple', baby: "The fetus is practicing all the skills it'll need: breathing, sucking, swallowing. Skull bones remain soft and flexible to allow passage through the birth canal.", partner: "Increased Braxton Hicks. Possible lightening (baby drops lower). Pelvic pressure makes walking uncomfortable. She may feel contractions more clearly.", dadTip: "Know the signs of real labor vs. Braxton Hicks. Timing contractions, water breaking, bloody show — know what to watch for.", hormone: { level: 'high', note: 'Prostaglandins are starting to soften the cervix. Her body is beginning the early prep for labor — even if birth is weeks away.' } },
+  { week: 34, icon: '🍈', size: 'A cantaloupe', baby: "The fetus is gaining about half a pound per week. Vernix thickens. Fingernails reach the tips of fingers. Sleep cycles are distinct and regular.", partner: "Extreme pelvic pressure and back pain. Frequent urination intensifies. Sleep quality is very poor. Emotionally — a mixture of readiness and fear.", dadTip: "If she can't sleep, don't remind her how tired she'll be 'when the baby comes.' Just be warm and present. No comparisons.", hormone: { level: 'high', note: 'Estrogen continues to peak. She may experience intense emotional preparation — processing the transition to motherhood.' } },
+  { week: 35, icon: '🍈', size: 'A honeydew melon', baby: "The fetus has reached near-full brain development for birth. Kidneys and liver are fully functional. If born now, it would likely need minimal medical support.", partner: "She feels enormous. Every position is uncomfortable. Heartburn, incontinence, swelling, and fatigue are all intensifying.", dadTip: "Pre-cook and freeze meals for after the birth. Having food ready is one of the most practical things you can do before the baby arrives.", hormone: { level: 'high', note: 'Oxytocin receptors in the uterus are increasing, priming the body for labor contractions. The end is genuinely near.' } },
+  { week: 36, icon: '🥬', size: 'A head of romaine', baby: "The fetus is dropping lower into the pelvis. Most organ systems are complete. It's continuing to gain weight — about an ounce a day at this point.", partner: "Weekly OB check-ups begin. Cervix may begin to dilate and efface. She may feel more comfortable breathing but increased pelvic pressure.", dadTip: "Know your hospital route, have a backup, and keep your phone charged. The drill: be ready to go at any time after week 37.", hormone: { level: 'high', note: 'Relaxin peaks to allow maximum pelvic joint flexibility for birth. Estrogen is at its pregnancy maximum.' } },
+  { week: 37, icon: '🥬', size: 'A bunch of Swiss chard', baby: "Full term milestone. The fetus has a firm grasp and is practicing all survival skills. Gaining about half a pound per week. Head is engaged in the pelvis for most.", partner: "She may experience the 'bloody show' or cervical mucus plug loss. Nesting instinct may be extreme. Braxton Hicks can be intense and regular.", dadTip: "The baby could come any day now. Be present, be available, and make sure the bag is in the car. Clear your schedule as much as possible.", hormone: { level: 'high', note: 'Prostaglandins are actively softening and ripening the cervix. Her body is in active labor preparation mode.' } },
+  { week: 38, icon: '🌿', size: 'A leek', baby: "The fetus is about 19-20 inches long and 6.8-7.5 lbs typically. The intestines are full of meconium (first poop). Lungs are fully mature and ready to breathe air.", partner: "Labor could start any day. She may notice mucus plug loss or a 'bloody show.' Contractions may become more regular. Emotional intensity is high.", dadTip: "Practice timing contractions. The 5-1-1 rule: contractions every 5 minutes, lasting 1 minute, for at least 1 hour = time to go to the hospital.", hormone: { level: 'high', note: 'Estrogen surges in the final weeks trigger the onset of labor. She may have a burst of energy (nesting sprint) before labor begins.' } },
+  { week: 39, icon: '🍉', size: 'A small watermelon', baby: "Fully developed. The brain and lungs are still maturing slightly. The fetus is in final position, head-down, ready for birth. Skin is smooth and plump.", partner: "Possibly losing the mucus plug. Contractions testing the waters. Anxiety and excitement are at maximum. She is ready, even when she says she isn't.", dadTip: "Let her lead. If she's in the zone cleaning at 3am — help or get out of the way. If she needs to talk, listen. Your job is to follow her lead right now.", hormone: { level: 'high', note: 'Oxytocin and prostaglandins are building toward the cascade that triggers labor. It\'s happening — just a matter of when.' } },
+  { week: 40, icon: '🎉', size: 'A pumpkin', baby: "Full term! Typical birth weight is 6-9 lbs, length 18-22 inches. The baby is ready. Everything from this point is about the timing of labor.", partner: "She may be emotionally done. Discomfort is at maximum. If overdue, her OB may discuss induction. Be patient — she is too.", dadTip: "Your only job right now is to be steady. She needs your calm confidence more than anything else. You've got this. You both do.", hormone: { level: 'high', note: 'The hormonal cocktail for labor (oxytocin, prostaglandins, adrenaline) is fully primed. Every day brings you closer to meeting your baby.' } },
+];
+
+// ==================== APP STATE ====================
+let currentMode = 'lmp'; // 'lmp' or 'due'
+let dueDate = null;
+let currentWeek = 0;
+
+function switchTab(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', (i===0&&mode==='lmp')||(i===1&&mode==='due')));
+  document.getElementById('lmp-input').style.display = mode === 'lmp' ? 'flex' : 'none';
+  document.getElementById('due-input').style.display = mode === 'due' ? 'flex' : 'none';
+}
+
+function startApp() {
+  let dd;
+  const lmpVal = document.getElementById('lmp-date').value;
+  const dueVal = document.getElementById('due-date').value;
+  // Auto-detect which field was filled in, regardless of tab state
+  if (currentMode === 'due' || (!lmpVal && dueVal)) {
+    if (!dueVal) { alert('Please enter your due date.'); return; }
+    dd = new Date(dueVal + 'T12:00:00'); // noon to avoid timezone shifts
+  } else {
+    if (!lmpVal) { alert('Please enter a date.'); return; }
+    const lmp = new Date(lmpVal + 'T12:00:00');
+    dd = new Date(lmp);
+    dd.setDate(dd.getDate() + 280);
+  }
+  dueDate = dd;
+  localStorage.setItem('dadmode_due', dd.toISOString());
+  showDashboard();
+}
+
+function showDashboard() {
+  const today = new Date();
+  const totalDays = 280;
+  const msPerDay = 86400000;
+  const daysLeft = Math.max(0, Math.floor((dueDate - today) / msPerDay));
+  const daysDone = Math.max(0, totalDays - daysLeft);
+  const pct = Math.min(100, Math.round((daysDone / totalDays) * 100));
+  currentWeek = Math.min(40, Math.max(1, Math.floor(daysDone / 7) + 1));
+
+  document.getElementById('onboarding').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+
+  document.getElementById('current-week-num').textContent = currentWeek;
+  document.getElementById('days-left').textContent = daysLeft;
+  document.getElementById('days-done').textContent = daysDone;
+  document.getElementById('pct-done').textContent = pct + '%';
+
+  const tname = currentWeek <= 13 ? 'First Trimester' : currentWeek <= 26 ? 'Second Trimester' : 'Third Trimester';
+  document.getElementById('trimester-badge').textContent = tname;
+
+  const dueFmt = dueDate.toLocaleDateString('en-US', {month:'short', day:'numeric'});
+  document.getElementById('due-date-label').textContent = 'Due ' + dueFmt;
+
+  setTimeout(() => {
+    document.getElementById('prog-fill').style.width = pct + '%';
+  }, 100);
+
+  const wdata = weekData[currentWeek - 1] || weekData[39];
+  document.getElementById('current-week-card').innerHTML = buildWeekCard(wdata, true);
+
+  buildTimeline();
+}
+
+function buildWeekCard(w, isCurrent) {
+  const hlClass = { high: 'hl-high', medium: 'hl-medium', low: 'hl-low', 'medium-high': 'hl-high' }[w.hormone.level] || 'hl-medium';
+  const hlLabel = w.hormone.level.replace('-', '/').toUpperCase();
+  return `
+    <div class="card-header">
+      <div class="baby-icon">${w.icon}</div>
+      <div class="card-header-text">
+        <h3>Week ${w.week}</h3>
+        <div class="baby-size">📏 ${w.size}</div>
+      </div>
+    </div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-block-label">🍼 Baby</div>
+        <div class="info-block-text">${w.baby}</div>
+      </div>
+      <div class="info-block">
+        <div class="info-block-label">💛 Partner</div>
+        <div class="info-block-text">${w.partner}</div>
+      </div>
+    </div>
+    <div class="dad-tip">
+      <div class="dad-tip-label">⚡ Dad Tip</div>
+      <div class="dad-tip-text">${w.dadTip}</div>
+    </div>
+    <div class="hormone-chip">
+      <span class="hormone-level ${hlClass}">${hlLabel}</span>
+      <span class="hormone-note">${w.hormone.note}</span>
+    </div>
+  `;
+}
+
+function buildTimeline() {
+  const el = document.getElementById('timeline-scroller');
+  el.innerHTML = '';
+  weekData.forEach(w => {
+    const pill = document.createElement('div');
+    pill.className = 't-week-pill' + (w.week === currentWeek ? ' current' : '') + (w.week < currentWeek ? ' past' : '');
+    pill.innerHTML = `<span class="t-pill-num">${w.week}</span><span class="t-pill-icon">${w.icon}</span><span class="t-pill-label">wk ${w.week}</span>`;
+    pill.onclick = () => openWeekModal(w.week);
+    el.appendChild(pill);
+  });
+  // Scroll to current week
+  const currentPill = el.querySelector('.current');
+  if (currentPill) {
+    setTimeout(() => currentPill.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }), 400);
+  }
+}
+
+function openWeekModal(weekNum) {
+  const w = weekData[weekNum - 1];
+  if (!w) return;
+  document.getElementById('modal-content').innerHTML = buildWeekCard(w, false);
+  document.getElementById('week-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('week-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('week-modal')) closeModal();
+}
+
+function resetApp() {
+  if (!confirm('Reset your dates and start over?')) return;
+  localStorage.removeItem('dadmode_due');
+  dueDate = null;
+  currentWeek = 0;
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('onboarding').style.display = 'flex';
+  document.getElementById('prog-fill').style.width = '0%';
+  document.getElementById('lmp-date').value = '';
+  document.getElementById('due-date').value = '';
+}
+
+// ==================== INIT ====================
+(function init() {
+  const saved = localStorage.getItem('dadmode_due');
+  if (saved) {
+    dueDate = new Date(saved);
+    showDashboard();
+  }
+})();
+</script>
+</body>
+</html>
