@@ -21,7 +21,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-dm-sans), sans-serif;
     background: var(--navy);
     color: var(--text);
     min-height: 100vh;
@@ -71,7 +71,7 @@
   }
 
   .logo-title {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-fraunces), serif;
     font-size: 3rem;
     font-weight: 700;
     color: var(--cream);
@@ -102,7 +102,7 @@
   }
 
   .onboarding-card h2 {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-fraunces), serif;
     font-size: 1.4rem;
     color: var(--cream);
     margin-bottom: 0.5rem;
@@ -129,7 +129,7 @@
     padding: 0.65rem 0.5rem;
     border: none;
     border-radius: 8px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-dm-sans), sans-serif;
     font-size: 0.8rem;
     font-weight: 500;
     cursor: pointer;
@@ -163,7 +163,7 @@
     border: 1px solid rgba(245,166,35,0.25);
     border-radius: var(--radius-sm);
     color: var(--cream);
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-dm-sans), sans-serif;
     font-size: 1rem;
     padding: 0.75rem 1rem;
     width: 100%;
@@ -185,7 +185,7 @@
     color: var(--navy);
     border: none;
     border-radius: var(--radius-sm);
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-dm-sans), sans-serif;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
@@ -216,7 +216,7 @@
   }
 
   .dash-logo {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-fraunces), serif;
     font-size: 1.4rem;
     font-weight: 700;
     color: var(--cream);
@@ -228,7 +228,7 @@
     background: transparent;
     border: 1px solid rgba(245,166,35,0.3);
     color: var(--text-muted);
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-dm-sans), sans-serif;
     font-size: 0.75rem;
     padding: 0.4rem 0.75rem;
     border-radius: 20px;
@@ -246,7 +246,7 @@
   .week-badge-wrap { position: relative; display: inline-block; margin-bottom: 1.5rem; }
 
   .week-number-big {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-fraunces), serif;
     font-size: 5.5rem;
     font-weight: 700;
     color: var(--gold);
@@ -321,7 +321,7 @@
   .section-pad { padding: 0 1.5rem; }
 
   .section-title {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-fraunces), serif;
     font-size: 1.1rem;
     color: var(--cream);
     margin-bottom: 1rem;
@@ -354,7 +354,7 @@
   .baby-icon { font-size: 3rem; animation: pulse 3s ease-in-out infinite; }
 
   .card-header-text h3 {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-fraunces), serif;
     font-size: 1.4rem;
     color: var(--cream);
     font-weight: 600;
@@ -450,7 +450,7 @@
   .timeline-section { padding: 1.5rem 1.5rem 0; }
 
   .timeline-title {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-fraunces), serif;
     font-size: 1.1rem;
     color: var(--cream);
     margin-bottom: 1rem;
@@ -496,7 +496,7 @@
   }
 
   .t-pill-num {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-fraunces), serif;
     font-size: 1.1rem;
     color: var(--cream);
     display: block;
@@ -597,7 +597,7 @@
   }
 
   .stat-number {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-fraunces), serif;
     font-size: 1.6rem;
     color: var(--gold);
     display: block;
@@ -641,7 +641,7 @@
   }
 
   .email-capture h3 {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-fraunces), serif;
     font-size: 1.15rem;
     color: var(--cream);
     font-weight: 600;
@@ -666,7 +666,7 @@
     border: 1px solid rgba(245,166,35,0.25);
     border-radius: var(--radius-sm);
     color: var(--cream);
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-dm-sans), sans-serif;
     font-size: 1rem;
     padding: 0.75rem 1rem;
     outline: none;
