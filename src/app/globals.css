@@ -621,6 +621,95 @@
 
   .animate-in { animation: fadeInUp 0.4s ease forwards; }
 
+  /* ==================== FORM ERROR ==================== */
+  .form-error {
+    color: #ff8080;
+    font-size: 0.8rem;
+    margin: -0.5rem 0 1rem;
+    text-align: left;
+  }
+
+  /* ==================== EMAIL CAPTURE ==================== */
+  .email-capture {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--glow);
+    backdrop-filter: blur(10px);
+  }
+
+  .email-capture h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.15rem;
+    color: var(--cream);
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+
+  .email-capture p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+
+  .email-input-row {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .email-input-row input {
+    flex: 1;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(245,166,35,0.25);
+    border-radius: var(--radius-sm);
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .email-input-row input::placeholder { color: var(--text-muted); }
+
+  .email-input-row input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(245,166,35,0.1);
+  }
+
+  .email-input-row button {
+    flex-shrink: 0;
+    width: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--navy);
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+
+  .email-input-row button:hover:not(:disabled) {
+    box-shadow: 0 8px 25px rgba(245,166,35,0.35);
+  }
+
+  .email-input-row button:disabled { opacity: 0.6; cursor: default; }
+
+  .success-msg {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--cream);
+    font-size: 0.95rem;
+  }
+
+  .success-check { color: var(--gold); flex-shrink: 0; }
+
   @media (max-width: 400px) {
     .week-number-big { font-size: 4.5rem; }
     .logo-title { font-size: 2.5rem; }

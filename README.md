@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DadMode 🍼
 
-## Getting Started
+A mobile-first pregnancy companion **built for dads**. Enter your partner's last
+period or due date and DadMode shows you where you are week-by-week: what's
+happening with the baby, what she's likely experiencing, a practical "dad tip,"
+and a plain-language note on the hormonal shifts behind it all — plus a 40-week
+timeline you can tap through.
 
-First, run the development server:
+## Tech stack
+
+- **[Next.js 16](https://nextjs.org)** (App Router, Turbopack) + **React 19**
+- **TypeScript** (strict)
+- **[Supabase](https://supabase.com)** — stores email leads
+- **[Resend](https://resend.com)** — sends the welcome email
+- **[lucide-react](https://lucide.dev)** — icons
+
+## Getting started
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Email capture is optional in development — the app runs without it, and the API
+route degrades gracefully when keys are absent. To enable it, create a
+`.env.local`:
 
-## Learn More
+```bash
+NEXT_PUBLIC_SUPABASE_URL=...
+SUPABASE_SERVICE_ROLE_KEY=...      # server-side only
+RESEND_API_KEY=...                 # omit to skip sending the welcome email
+```
 
-To learn more about Next.js, take a look at the following resources:
+The onboard endpoint upserts into a Supabase table named `leads`
+(`email` text unique, `due_date` timestamptz nullable).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+  app/
+    page.tsx              # the whole UI: onboarding + dashboard (client component)
+    data.ts              # WeekData type + the 40-week content
+    layout.tsx           # root layout, metadata, fonts
+    globals.css          # design system (navy/gold theme)
+    api/onboard/route.ts # POST: save lead to Supabase + send welcome email
+  lib/
+    supabase.ts          # Supabase client
+```
 
-## Deploy on Vercel
+`dadmode-index.html` is the original standalone prototype, kept for reference.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Scripts
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Command         | Description                |
+| --------------- | -------------------------- |
+| `npm run dev`   | Start the dev server       |
+| `npm run build` | Production build           |
+| `npm start`     | Serve the production build |
+| `npm run lint`  | Run ESLint                 |
+
+## Deploy
+
+Deploys cleanly to [Vercel](https://vercel.com/new). Set the environment
+variables above in the project settings.

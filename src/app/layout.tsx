@@ -1,9 +1,15 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "DadMode - Your Pregnancy Companion",
   description: "A week-by-week guide for dads-to-be.",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0d1b2a",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
