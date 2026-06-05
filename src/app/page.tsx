@@ -3,37 +3,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Mail, RefreshCw, Check } from 'lucide-react';
 import { weekData, type WeekData } from './data';
-
-const TOTAL_DAYS = 280;
-const MS_PER_DAY = 86400000;
-const STORAGE_KEY = 'dadmode_due';
-
-interface Stats {
-  daysLeft: number;
-  daysDone: number;
-  pct: number;
-  week: number;
-}
-
-function computeStats(due: Date, today: Date = new Date()): Stats {
-  const daysLeft = Math.max(0, Math.floor((due.getTime() - today.getTime()) / MS_PER_DAY));
-  const daysDone = Math.min(TOTAL_DAYS, Math.max(0, TOTAL_DAYS - daysLeft));
-  const pct = Math.min(100, Math.max(0, Math.round((daysDone / TOTAL_DAYS) * 100)));
-  const week = Math.min(40, Math.max(1, Math.floor(daysDone / 7) + 1));
-  return { daysLeft, daysDone, pct, week };
-}
-
-function hormoneClass(level: string): string {
-  switch (level) {
-    case 'high':
-    case 'medium-high':
-      return 'hl-high';
-    case 'low':
-      return 'hl-low';
-    default:
-      return 'hl-medium';
-  }
-}
+import {
+  STORAGE_KEY,
+  computeStats,
+  dueDateFromLmp,
+  trimesterLabel,
+  hormoneClass,
+  weekContent,
+  type Stats,
+} from '@/lib/pregnancy';
 
 function WeekCard({ data, highlight }: { data: WeekData; highlight?: boolean }) {
   return (
@@ -147,8 +125,7 @@ export default function Home() {
         return;
       }
       const lmp = new Date(lmpValue + 'T12:00:00');
-      d = new Date(lmp);
-      d.setDate(d.getDate() + TOTAL_DAYS);
+      d = dueDateFromLmp(lmp);
     }
     setError('');
     setDueDate(d);
@@ -252,9 +229,9 @@ export default function Home() {
 
   // ==================== DASHBOARD ====================
   const { daysLeft, daysDone, pct, week } = stats;
-  const trimester = week <= 13 ? 'First Trimester' : week <= 26 ? 'Second Trimester' : 'Third Trimester';
+  const trimester = trimesterLabel(week);
   const dueFmt = dueDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  const currentData = weekData[week - 1] || weekData[39];
+  const currentData = weekContent(week);
   const nextWeek = Math.min(40, week + 1);
   const modalData = modalWeek ? weekData[modalWeek - 1] : null;
 
