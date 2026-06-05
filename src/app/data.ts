@@ -1,4 +1,17 @@
-const weekData = [
+export interface WeekData {
+  week: number;
+  icon: string;
+  size: string;
+  baby: string;
+  partner: string;
+  dadTip: string;
+  hormone: {
+    level: string;
+    note: string;
+  };
+}
+
+export const weekData: WeekData[] = [
   { week: 1, icon: '🌿', size: 'A poppy seed', baby: "Fertilization hasn't happened yet — this is technically pre-pregnancy. Your partner's body is gearing up, releasing hormones to prepare for ovulation.", partner: "Light spotting or cramping may occur. Her body doesn't know it yet — but the journey is beginning.", dadTip: "Start a conversation about what you both want from this pregnancy. Set the tone early — presence over perfection.", hormone: { level: 'low', note: 'Estrogen and progesterone are at baseline. Mood is relatively stable.' } },
   { week: 2, icon: '🌾', size: 'A sesame seed', baby: "Ovulation happens this week. The egg is released and can be fertilized for 12-24 hours. Conception most likely occurs now.", partner: "She may feel a slight twinge (Mittelschmerz) during ovulation. Increased cervical mucus is normal.", dadTip: "Be supportive and patient. Whether you're trying or just found out — your calm energy matters more than you know.", hormone: { level: 'medium', note: 'LH surges to trigger ovulation. She may feel slightly more energetic or amorous.' } },
   { week: 3, icon: '🌾', size: 'A grain of rice', baby: "The blastocyst is travelling down the fallopian tube toward the uterus. Cell division is happening rapidly — a tiny miracle in progress.", partner: "No noticeable symptoms yet, though some women feel mild bloating or cramping as implantation begins.", dadTip: "If you know you're trying — keep stress low for both of you. A relaxed environment helps implantation.", hormone: { level: 'medium', note: 'hCG is just beginning to rise. The pregnancy hormone is making its first appearance.' } },
