@@ -65,6 +65,7 @@ export default function Home() {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [subscribeError, setSubscribeError] = useState('');
 
   const currentPillRef = useRef<HTMLButtonElement>(null);
 
@@ -102,11 +103,17 @@ export default function Home() {
     return () => clearTimeout(id);
   }, [stats]);
 
-  // Lock background scroll while the week-detail modal is open.
+  // Lock background scroll and allow Escape-to-close while the modal is open.
   useEffect(() => {
-    document.body.style.overflow = modalWeek ? 'hidden' : '';
+    if (!modalWeek) return;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setModalWeek(null);
+    };
+    window.addEventListener('keydown', onKey);
     return () => {
       document.body.style.overflow = '';
+      window.removeEventListener('keydown', onKey);
     };
   }, [modalWeek]);
 
@@ -144,21 +151,28 @@ export default function Home() {
     setError('');
     setSubmitted(false);
     setEmail('');
+    setSubscribeError('');
   };
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || isSubmitting) return;
     setIsSubmitting(true);
+    setSubscribeError('');
     try {
       const res = await fetch('/api/onboard', {
         method: 'POST',
         body: JSON.stringify({ email, dueDate: dueDate?.toISOString() }),
         headers: { 'Content-Type': 'application/json' },
       });
-      if (res.ok) setSubmitted(true);
-    } catch (err) {
-      console.error(err);
+      if (res.ok) {
+        setSubmitted(true);
+      } else {
+        const data = await res.json().catch(() => null);
+        setSubscribeError(data?.error || 'Something went wrong. Please try again.');
+      }
+    } catch {
+      setSubscribeError('Network error. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -304,6 +318,11 @@ export default function Home() {
                   {isSubmitting ? '…' : <Mail size={20} />}
                 </button>
               </div>
+              {subscribeError && (
+                <p className="form-error" role="alert" style={{ margin: '0.75rem 0 0' }}>
+                  {subscribeError}
+                </p>
+              )}
             </form>
           ) : (
             <div className="success-msg">

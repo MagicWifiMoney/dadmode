@@ -15,9 +15,31 @@ const dmSans = DM_Sans({
   display: "swap",
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dadmode.app";
+const title = "DadMode — Your Pregnancy Companion";
+const description =
+  "Track your partner's pregnancy week-by-week with insights made for dads — what's happening with the baby, what she's experiencing, and a practical tip each week.";
+
 export const metadata: Metadata = {
-  title: "DadMode - Your Pregnancy Companion",
-  description: "A week-by-week guide for dads-to-be.",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: title,
+    template: "%s · DadMode",
+  },
+  description,
+  applicationName: "DadMode",
+  openGraph: {
+    title,
+    description,
+    siteName: "DadMode",
+    type: "website",
+    url: siteUrl,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+  },
 };
 
 export const viewport: Viewport = {
