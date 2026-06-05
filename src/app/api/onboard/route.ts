@@ -1,11 +1,30 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { Resend } from 'resend';
+import { createRateLimiter } from '@/lib/rateLimit';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// Best-effort per-instance limit: 5 signups per IP per minute.
+const rateLimit = createRateLimiter({ limit: 5, windowMs: 60_000 });
+
+function clientIp(req: Request): string {
+  const fwd = req.headers.get('x-forwarded-for');
+  if (fwd) return fwd.split(',')[0].trim();
+  return req.headers.get('x-real-ip') ?? 'unknown';
+}
+
 export async function POST(req: Request) {
   try {
+    const limit = rateLimit(clientIp(req));
+    if (!limit.allowed) {
+      const retryAfter = Math.max(1, Math.ceil((limit.resetAt - Date.now()) / 1000));
+      return NextResponse.json(
+        { error: 'Too many requests. Please try again shortly.' },
+        { status: 429, headers: { 'Retry-After': String(retryAfter) } },
+      );
+    }
+
     let body: { email?: unknown; dueDate?: unknown };
     try {
       body = await req.json();
