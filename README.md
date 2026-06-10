@@ -44,24 +44,32 @@ The onboard endpoint upserts into a Supabase table named `leads`
 src/
   app/
     page.tsx              # the whole UI: onboarding + dashboard (client component)
-    data.ts              # WeekData type + the 40-week content
-    layout.tsx           # root layout, metadata, fonts
-    globals.css          # design system (navy/gold theme)
-    api/onboard/route.ts # POST: save lead to Supabase + send welcome email
+    data.ts               # WeekData type + the 40-week content
+    layout.tsx            # root layout, metadata, fonts, JSON-LD
+    globals.css           # design system (navy/gold theme)
+    robots.ts             # generated /robots.txt
+    sitemap.ts            # generated /sitemap.xml
+    api/onboard/route.ts  # POST: save lead to Supabase + send welcome email
   lib/
-    supabase.ts          # Supabase client
+    supabase.ts           # Supabase client
+    pregnancy.ts          # pure date/week/trimester logic (unit-tested)
+    rateLimit.ts          # in-memory request limiter (unit-tested)
+    site.ts               # shared site metadata (title, description, URL)
 ```
 
+Tests live next to the code they cover (`src/**/*.test.ts`), run with Vitest.
+`.github/workflows/ci.yml` runs lint, type-check, tests, and build on every PR.
 `dadmode-index.html` is the original standalone prototype, kept for reference.
 
 ## Scripts
 
-| Command         | Description                |
-| --------------- | -------------------------- |
-| `npm run dev`   | Start the dev server       |
-| `npm run build` | Production build           |
-| `npm start`     | Serve the production build |
-| `npm run lint`  | Run ESLint                 |
+| Command         | Description                       |
+| --------------- | --------------------------------- |
+| `npm run dev`   | Start the dev server              |
+| `npm run build` | Production build                  |
+| `npm start`     | Serve the production build        |
+| `npm run lint`  | Run ESLint                        |
+| `npm test`      | Run the Vitest unit-test suite    |
 
 ## Deploy
 
