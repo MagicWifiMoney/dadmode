@@ -640,7 +640,7 @@
     backdrop-filter: blur(10px);
   }
 
-  .email-capture h3 {
+  .email-capture h2 {
     font-family: var(--font-fraunces), serif;
     font-size: 1.15rem;
     color: var(--cream);

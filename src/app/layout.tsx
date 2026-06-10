@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, DM_Sans } from "next/font/google";
+import { siteUrl, siteName, siteTitle, siteDescription } from "@/lib/site";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -15,31 +16,39 @@ const dmSans = DM_Sans({
   display: "swap",
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://dadmode.app";
-const title = "DadMode — Your Pregnancy Companion";
-const description =
-  "Track your partner's pregnancy week-by-week with insights made for dads — what's happening with the baby, what she's experiencing, and a practical tip each week.";
-
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: title,
+    default: siteTitle,
     template: "%s · DadMode",
   },
-  description,
-  applicationName: "DadMode",
+  description: siteDescription,
+  applicationName: siteName,
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
-    title,
-    description,
-    siteName: "DadMode",
+    title: siteTitle,
+    description: siteDescription,
+    siteName,
     type: "website",
     url: siteUrl,
   },
   twitter: {
     card: "summary_large_image",
-    title,
-    description,
+    title: siteTitle,
+    description: siteDescription,
   },
+};
+
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: siteName,
+  url: siteUrl,
+  description: siteDescription,
+  // `logo` intentionally omitted: Google requires a PNG/JPG/SVG (not .ico), and
+  // there's no brand logo asset in the repo yet. Add one (e.g. /icon.png) here.
 };
 
 export const viewport: Viewport = {
@@ -56,6 +65,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${fraunces.variable} ${dmSans.variable}`}>
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationJsonLd).replace(/</g, "\\u003c"),
+          }}
+        />
         <div className="page">{children}</div>
       </body>
     </html>
