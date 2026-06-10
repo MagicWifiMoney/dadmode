@@ -1,4 +1,4 @@
-# DadMode 🍼
+# DadMode
 
 A mobile-first pregnancy companion **built for dads**. Enter your partner's last
 period or due date and DadMode shows you where you are week-by-week: what's

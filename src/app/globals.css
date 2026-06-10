@@ -58,18 +58,6 @@
     text-align: center;
   }
 
-  .logo-icon {
-    font-size: 4rem;
-    animation: pulse 3s ease-in-out infinite;
-    margin-bottom: 1rem;
-    filter: drop-shadow(0 0 20px rgba(245,166,35,0.5));
-  }
-
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(245,166,35,0.5)); }
-    50% { transform: scale(1.08); filter: drop-shadow(0 0 35px rgba(245,166,35,0.8)); }
-  }
-
   .logo-title {
     font-family: var(--font-fraunces), serif;
     font-size: 3rem;
@@ -351,7 +339,6 @@
     margin-bottom: 1.25rem;
   }
 
-  .baby-icon { font-size: 3rem; animation: pulse 3s ease-in-out infinite; }
 
   .card-header-text h3 {
     font-family: var(--font-fraunces), serif;
@@ -504,7 +491,6 @@
 
   .t-week-pill.current .t-pill-num { color: var(--gold); }
 
-  .t-pill-icon { font-size: 1rem; display: block; }
 
   .t-pill-label {
     font-size: 0.55rem;
