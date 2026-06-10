@@ -47,7 +47,8 @@ const organizationJsonLd = {
   name: siteName,
   url: siteUrl,
   description: siteDescription,
-  logo: `${siteUrl}/favicon.ico`,
+  // `logo` intentionally omitted: Google requires a PNG/JPG/SVG (not .ico), and
+  // there's no brand logo asset in the repo yet. Add one (e.g. /icon.png) here.
 };
 
 export const viewport: Viewport = {

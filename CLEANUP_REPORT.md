@@ -24,9 +24,13 @@ domain. Canonical, sitemap, robots, and OG URLs currently fall back to the
 `https://dadmode.app` placeholder — if the live domain differs, every page will
 canonicalize to a domain you may not own.
 
-**Recommended (out of "broken" scope, not done):** add a branded Open Graph share
-image (`app/opengraph-image.tsx`). The Twitter card is `summary_large_image` but
-there's no image yet, so shared links render without a preview picture.
+**Recommended (out of "broken" scope, not done — needs a real brand asset):**
+- Add a branded Open Graph share image (`app/opengraph-image.tsx`). The Twitter card
+  is `summary_large_image` but there's no image yet, so shared links render without a
+  preview picture.
+- Add a real logo (PNG/SVG, ≥ 112×112) and reference it as `logo` in the Organization
+  JSON-LD. It's currently omitted because `.ico` isn't a Google-supported logo format
+  and no logo asset exists in the repo.
 
 ---
 
