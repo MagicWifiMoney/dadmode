@@ -183,7 +183,7 @@ export default function Home() {
     return (
       <div id="onboarding">
         <div className="logo-icon">🍼</div>
-        <div className="logo-title">Dad<span>Mode</span></div>
+        <h1 className="logo-title">Dad<span>Mode</span></h1>
         <div className="logo-sub">Your pregnancy companion, built for you</div>
 
         <div className="onboarding-card animate-in">
@@ -252,7 +252,7 @@ export default function Home() {
   return (
     <div id="dashboard" style={{ display: 'block' }}>
       <div className="dash-header">
-        <div className="dash-logo">Dad<span>Mode</span></div>
+        <h1 className="dash-logo">Dad<span>Mode</span></h1>
         <button className="btn-reset" onClick={resetApp}>
           <RefreshCw size={13} style={{ verticalAlign: '-2px', marginRight: 4 }} /> Reset
         </button>
@@ -295,7 +295,7 @@ export default function Home() {
       </div>
 
       <div className="section-pad">
-        <div className="section-title">This week</div>
+        <h2 className="section-title">This week</h2>
         <WeekCard data={currentData} highlight />
       </div>
 
@@ -303,7 +303,7 @@ export default function Home() {
         <div className="email-capture">
           {!submitted ? (
             <form onSubmit={handleSubscribe}>
-              <h3>Get weekly dad tips in your inbox</h3>
+              <h2>Get weekly dad tips in your inbox</h2>
               <p>We&apos;ll send Week {nextWeek}&apos;s tip straight to you.</p>
               <div className="email-input-row">
                 <input
@@ -334,7 +334,7 @@ export default function Home() {
       </div>
 
       <div className="timeline-section">
-        <div className="timeline-title">All 40 Weeks</div>
+        <h2 className="timeline-title">All 40 Weeks</h2>
         <div className="timeline-scroller">
           {weekData.map((w) => {
             const isCurrent = w.week === week;
