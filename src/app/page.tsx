@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Mail, RefreshCw, Check, X } from 'lucide-react';
+import Link from 'next/link';
+import { Mail, RefreshCw, Check, X, Luggage, Activity, Timer, Heart, Lock } from 'lucide-react';
 import { weekData, type WeekData } from './data';
 import {
   STORAGE_KEY,
@@ -12,6 +13,15 @@ import {
   weekContent,
   type Stats,
 } from '@/lib/pregnancy';
+import { weekTodo, nextAppointment } from '@/lib/content';
+import { isPro } from '@/lib/entitlement';
+
+const TOOLKIT_TEASERS = [
+  { title: 'Hospital Bag', desc: 'His, hers, and baby’s — nothing forgotten.', icon: Luggage },
+  { title: 'Kick Counter', desc: 'Count to 10 with saved sessions.', icon: Activity },
+  { title: 'Contraction Timer', desc: 'Knows when it’s really go-time.', icon: Timer },
+  { title: 'Baby Names', desc: 'Surface the names you both love.', icon: Heart },
+];
 
 function WeekCard({ data, highlight }: { data: WeekData; highlight?: boolean }) {
   return (
@@ -66,6 +76,9 @@ export default function Home() {
   const [submitted, setSubmitted] = useState(false);
   const [subscribeError, setSubscribeError] = useState('');
 
+  // Pro entitlement (read from localStorage after mount to avoid hydration drift)
+  const [pro, setProState] = useState(false);
+
   const currentPillRef = useRef<HTMLButtonElement>(null);
 
   // Hydrate from localStorage once on mount. The server (and the client's first
@@ -83,6 +96,7 @@ export default function Home() {
       }
     }
   }, []);
+  useEffect(() => setProState(isPro()), []);
   /* eslint-enable react-hooks/set-state-in-effect */
 
   // Animate the progress bar from 0 -> pct after the dashboard mounts. The
@@ -235,6 +249,12 @@ export default function Home() {
 
           <button className="btn-primary" onClick={startApp}>Let&apos;s Go →</button>
         </div>
+
+        <div className="onboarding-links">
+          <Link href="/week/20">See a sample week</Link>
+          <span aria-hidden>·</span>
+          <Link href="/pricing">What’s in Pro</Link>
+        </div>
       </div>
     );
   }
@@ -246,14 +266,19 @@ export default function Home() {
   const currentData = weekContent(week);
   const nextWeek = Math.min(40, week + 1);
   const modalData = modalWeek ? weekData[modalWeek - 1] : null;
+  const appt = nextAppointment(week);
 
   return (
     <div id="dashboard" style={{ display: 'block' }}>
       <div className="dash-header">
         <h1 className="dash-logo">Dad<span>Mode</span></h1>
-        <button className="btn-reset" onClick={resetApp}>
-          <RefreshCw size={13} style={{ verticalAlign: '-2px', marginRight: 4 }} /> Reset
-        </button>
+        <div className="dash-nav">
+          <Link href="/toolkit" className="dash-nav-link">Toolkit</Link>
+          <Link href="/pricing" className="dash-nav-link nav-cta">{pro ? 'Pro' : 'Go Pro'}</Link>
+          <button className="btn-reset" onClick={resetApp}>
+            <RefreshCw size={13} style={{ verticalAlign: '-2px', marginRight: 4 }} /> Reset
+          </button>
+        </div>
       </div>
 
       <div className="dash-hero">
@@ -295,6 +320,42 @@ export default function Home() {
       <div className="section-pad">
         <h2 className="section-title">This week</h2>
         <WeekCard data={currentData} highlight />
+        <div className="action-row">
+          <div className="action-card">
+            <div className="action-label">Do this week</div>
+            <p>{weekTodo(week)}</p>
+          </div>
+          {appt && (
+            <div className="action-card">
+              <div className="action-label">Next appointment</div>
+              <p><strong>{appt.title}</strong> · around week {appt.week}</p>
+            </div>
+          )}
+        </div>
+        <Link href={`/week/${week}`} className="full-guide-link">Read the full Week {week} guide →</Link>
+      </div>
+
+      <div className="section-pad">
+        <div className="toolkit-promo">
+          <div className="promo-head">
+            <h2 className="section-title">The dad toolkit{pro ? '' : ' · Pro'}</h2>
+            <Link href={pro ? '/toolkit' : '/pricing'} className="promo-link">
+              {pro ? 'Open' : 'Unlock'} →
+            </Link>
+          </div>
+          <div className="promo-grid">
+            {TOOLKIT_TEASERS.map((t) => {
+              const Icon = t.icon;
+              return (
+                <Link key={t.title} href={pro ? '/toolkit' : '/pricing'} className="promo-card">
+                  <div className="promo-icon"><Icon size={20} /></div>
+                  <h3>{t.title}{!pro && <Lock size={13} className="promo-lock" />}</h3>
+                  <p>{t.desc}</p>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
       <div className="section-pad">
@@ -361,6 +422,11 @@ export default function Home() {
         <div className="modal-sheet" role="dialog" aria-modal="true">
           <div className="modal-handle"></div>
           {modalData && <WeekCard data={modalData} />}
+          {modalWeek && (
+            <Link href={`/week/${modalWeek}`} className="full-guide-link modal-guide">
+              Full Week {modalWeek} guide →
+            </Link>
+          )}
           <button className="modal-close" onClick={() => setModalWeek(null)} aria-label="Close"><X size={16} /></button>
         </div>
       </div>
