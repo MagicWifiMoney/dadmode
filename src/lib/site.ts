@@ -1,4 +1,16 @@
-export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://dadmode.app').replace(/\/$/, '');
+// Normalize NEXT_PUBLIC_SITE_URL so a missing protocol or trailing slash can't
+// throw `new URL(...)` at build time (e.g. "dadmode.app" -> "https://dadmode.app").
+function normalizeSiteUrl(raw: string): string {
+  const trimmed = raw.trim();
+  const withProtocol = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+  try {
+    return new URL(withProtocol).origin;
+  } catch {
+    return 'https://dadmode.app';
+  }
+}
+
+export const siteUrl = normalizeSiteUrl(process.env.NEXT_PUBLIC_SITE_URL || 'https://dadmode.app');
 export const siteName = 'DadMode';
 export const siteTitle = 'DadMode — Your Pregnancy Companion';
 // Kept under 160 characters for search-result snippets.
