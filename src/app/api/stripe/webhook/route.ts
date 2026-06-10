@@ -38,7 +38,8 @@ export async function POST(req: Request) {
               email: email.toLowerCase(),
               plan: (s.metadata?.plan as string) ?? 'pass',
               status: 'active',
-              stripe_customer_id: typeof s.customer === 'string' ? s.customer : null,
+              stripe_customer_id:
+                typeof s.customer === 'string' ? s.customer : s.customer?.id ?? null,
               stripe_session_id: s.id,
               updated_at: new Date().toISOString(),
             },
@@ -50,10 +51,13 @@ export async function POST(req: Request) {
       case 'customer.subscription.deleted': {
         const sub = event.data.object as Stripe.Subscription;
         const customerId = typeof sub.customer === 'string' ? sub.customer : sub.customer.id;
+        // Scope to the monthly plan only: a lifetime Pass and a subscription can
+        // share a Stripe customer, and canceling the sub must never revoke a Pass.
         await supabase
           .from('entitlements')
           .update({ status: 'canceled', updated_at: new Date().toISOString() })
-          .eq('stripe_customer_id', customerId);
+          .eq('stripe_customer_id', customerId)
+          .eq('plan', 'monthly');
         break;
       }
       default:
