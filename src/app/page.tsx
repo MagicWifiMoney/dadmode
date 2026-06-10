@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Mail, RefreshCw, Check } from 'lucide-react';
+import { Mail, RefreshCw, Check, X } from 'lucide-react';
 import { weekData, type WeekData } from './data';
 import {
   STORAGE_KEY,
@@ -17,24 +17,23 @@ function WeekCard({ data, highlight }: { data: WeekData; highlight?: boolean }) 
   return (
     <div className={`week-card${highlight ? ' highlight' : ''}`}>
       <div className="card-header">
-        <div className="baby-icon">{data.icon}</div>
         <div className="card-header-text">
           <h3>Week {data.week}</h3>
-          <div className="baby-size">📏 {data.size}</div>
+          <div className="baby-size">{data.size}</div>
         </div>
       </div>
       <div className="info-grid">
         <div className="info-block">
-          <div className="info-block-label">🍼 Baby</div>
+          <div className="info-block-label">Baby</div>
           <div className="info-block-text">{data.baby}</div>
         </div>
         <div className="info-block">
-          <div className="info-block-label">💛 Partner</div>
+          <div className="info-block-label">Partner</div>
           <div className="info-block-text">{data.partner}</div>
         </div>
       </div>
       <div className="dad-tip">
-        <div className="dad-tip-label">⚡ Dad Tip</div>
+        <div className="dad-tip-label">Dad Tip</div>
         <div className="dad-tip-text">{data.dadTip}</div>
       </div>
       <div className="hormone-chip">
@@ -182,7 +181,6 @@ export default function Home() {
   if (!dueDate || !stats) {
     return (
       <div id="onboarding">
-        <div className="logo-icon">🍼</div>
         <h1 className="logo-title">Dad<span>Mode</span></h1>
         <div className="logo-sub">Your pregnancy companion, built for you</div>
 
@@ -347,7 +345,6 @@ export default function Home() {
                 aria-label={`View week ${w.week} details`}
               >
                 <span className="t-pill-num">{w.week}</span>
-                <span className="t-pill-icon">{w.icon}</span>
                 <span className="t-pill-label">wk {w.week}</span>
               </button>
             );
@@ -364,7 +361,7 @@ export default function Home() {
         <div className="modal-sheet" role="dialog" aria-modal="true">
           <div className="modal-handle"></div>
           {modalData && <WeekCard data={modalData} />}
-          <button className="modal-close" onClick={() => setModalWeek(null)} aria-label="Close">✕</button>
+          <button className="modal-close" onClick={() => setModalWeek(null)} aria-label="Close"><X size={16} /></button>
         </div>
       </div>
     </div>

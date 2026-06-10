@@ -66,7 +66,7 @@ export async function POST(req: Request) {
         await resend.emails.send({
           from: 'DadMode <hello@jgiebz.com>', // domain must be verified in Resend
           to: email,
-          subject: 'Welcome to DadMode 🍼',
+          subject: 'Welcome to DadMode',
           html: `<p>Congrats! You're officially in DadMode.</p>${dueLine}`,
         });
       } catch (mailErr) {
