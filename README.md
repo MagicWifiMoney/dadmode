@@ -113,6 +113,7 @@ Tests live next to the code they cover (`src/**/*.test.ts`), run with Vitest.
 | `npm start`     | Serve the production build        |
 | `npm run lint`  | Run ESLint                        |
 | `npm test`      | Run the Vitest unit-test suite    |
+| `npm run setup:stripe` | Provision Stripe prices + webhook (see `docs/SETUP.md`) |
 
 ## Deploy
 
