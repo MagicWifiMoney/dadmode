@@ -1,113 +1,99 @@
 # DadMode — Go-Live Setup
 
-Everything below is optional for the app to *run* (it degrades gracefully), but
-required to actually **capture leads, send email, take payments, and view the
-admin dashboard**. Work top to bottom; each section ends with the env vars it
-produces. Put them in Vercel (Project → Settings → Environment Variables) and in
-`.env.local` for local dev.
+The app already runs and deploys without any of this (it degrades gracefully).
+This is the ~15 minutes to switch on **leads + payments + admin**. Only three
+things are unavoidably yours: create the accounts, grab the keys, and paste the
+env vars into Vercel. The fiddly parts are automated below.
+
+> Current production URL: **https://dadmode-giebz.vercel.app**
+> Welcome email is intentionally deferred — see [Add email later](#add-email-later).
 
 ---
 
-## 1. Supabase (leads + Pro entitlements)
+## 1. Supabase — leads + Pro entitlements
 
 1. Create a project at [supabase.com](https://supabase.com).
-2. Open **SQL Editor** and run both migrations, in order:
-   - `supabase/migrations/0001_init.sql` (the `leads` table)
-   - `supabase/migrations/0002_entitlements.sql` (the `entitlements` table)
-3. Go to **Project Settings → API** and copy:
+2. Open **SQL Editor**, paste all of [`supabase/setup.sql`](../supabase/setup.sql), and **Run**.
+   (One paste; safe to re-run.)
+3. **Project Settings → API**, copy:
    - **Project URL** → `NEXT_PUBLIC_SUPABASE_URL`
-   - **service_role** secret → `SUPABASE_SERVICE_ROLE_KEY` *(server-side only — never expose it to the browser)*
+   - **service_role** secret → `SUPABASE_SERVICE_ROLE_KEY` *(server-side only)*
+
+## 2. Stripe — DadMode Pro (one command)
+
+1. Create an account at [stripe.com](https://stripe.com). Leave it in **Test mode** (toggle, top-right).
+2. **Developers → API keys** → copy the **Secret key** (`sk_test_...`).
+3. Run the provisioning script — it creates both prices **and** the webhook, then
+   prints the env vars:
+
+   ```bash
+   STRIPE_SECRET_KEY=sk_test_xxx npm run setup:stripe
+   ```
+
+   Copy the `STRIPE_PRICE_PASS`, `STRIPE_PRICE_MONTHLY`, and `STRIPE_WEBHOOK_SECRET`
+   it prints. That's it — no clicking around the Stripe dashboard.
+4. **Test the loop:** after deploying with these vars, open `/pricing`, pay with
+   test card `4242 4242 4242 4242` (any future expiry/CVC) → you land on `/welcome`,
+   Pro unlocks, and a row appears in `/admin`.
+
+## 3. Admin dashboard
+
+Pick any long random secret for `ADMIN_TOKEN`. A freshly generated one you can use:
 
 ```
+ADMIN_TOKEN=f72a17c590df80025a3ae9e80b6e5c8fb4e18a15fdf2684525c26dd67ef3af2b
+```
+
+(Regenerate anytime with `openssl rand -hex 32`.) Then open `/admin` and paste it in.
+
+## 4. Paste into Vercel
+
+Project → **Settings → Environment Variables** → add these (Production), then redeploy:
+
+```
+NEXT_PUBLIC_SITE_URL=https://dadmode-giebz.vercel.app
 NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=eyJ...           # service_role, not anon
-```
-
-> RLS is enabled with no policies, so only the service-role key (used by the API
-> routes) can read/write these tables. That's intentional.
-
----
-
-## 2. Resend (welcome email)
-
-1. Create an account at [resend.com](https://resend.com).
-2. **Add and verify your sending domain** (Domains → Add). DNS records take a
-   few minutes.
-3. Create an **API key** (API Keys → Create).
-4. In `src/app/api/onboard/route.ts`, set the `from:` address to an address on
-   your verified domain (it currently reads `DadMode <hello@jgiebz.com>`).
-
-```
-RESEND_API_KEY=re_...
-```
-
-Omit the key entirely and signups still save to Supabase — they just don't get
-an email.
-
----
-
-## 3. Stripe (DadMode Pro)
-
-1. Create an account at [stripe.com](https://stripe.com). Use **Test mode**
-   first (toggle, top-right) — test card `4242 4242 4242 4242`, any future expiry/CVC.
-2. **Create two Prices** (Product catalog → Add product):
-   - *DadMode Pro — Whole Pregnancy Pass*: **One-time**, **$29** → copy the
-     Price ID (`price_...`) into `STRIPE_PRICE_PASS`.
-   - *DadMode Pro — Monthly*: **Recurring / monthly**, **$6** → copy into
-     `STRIPE_PRICE_MONTHLY`.
-   - *(Optional: skip this and checkout will build an inline price automatically.)*
-3. **Secret key**: Developers → API keys → copy **Secret key** → `STRIPE_SECRET_KEY`.
-4. **Webhook**: Developers → Webhooks → **Add endpoint**:
-   - URL: `https://YOUR_DOMAIN/api/stripe/webhook`
-   - Events: `checkout.session.completed` and `customer.subscription.deleted`
-   - After saving, copy the **Signing secret** (`whsec_...`) → `STRIPE_WEBHOOK_SECRET`.
-
-```
-STRIPE_SECRET_KEY=sk_test_...              # sk_live_... when you go live
-STRIPE_WEBHOOK_SECRET=whsec_...
-STRIPE_PRICE_PASS=price_...                # optional
-STRIPE_PRICE_MONTHLY=price_...             # optional
-```
-
-**Test the full loop:** open `/pricing`, buy with the test card → you land on
-`/welcome`, Pro unlocks, and a row appears in `entitlements` (check the admin
-dashboard). To verify webhooks locally, use the Stripe CLI:
-`stripe listen --forward-to localhost:3000/api/stripe/webhook`.
-
-**Going live:** flip Stripe to Live mode, recreate the prices + webhook there,
-and swap in the `sk_live_...` / live `whsec_...` values.
-
----
-
-## 4. Admin dashboard (`/admin`)
-
-Generate a long random secret and set it. Then visit `/admin` and paste it in.
-
-```
-ADMIN_TOKEN=$(openssl rand -hex 32)        # any long random string
-```
-
-Omit it and `/admin` returns "not configured." The dashboard shows lead counts,
-Pro customer counts, and recent rows.
-
----
-
-## 5. Site URL + demo flag
-
-```
-NEXT_PUBLIC_SITE_URL=https://your-domain.com   # absolute URLs for SEO / OG tags
-NEXT_PUBLIC_DADMODE_DEMO=                       # set to 1 ONLY to preview Pro without paying
+SUPABASE_SERVICE_ROLE_KEY=eyJ...                 # service_role
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_PRICE_PASS=price_...                       # from the script
+STRIPE_PRICE_MONTHLY=price_...                     # from the script
+STRIPE_WEBHOOK_SECRET=whsec_...                    # from the script
+ADMIN_TOKEN=f72a17c590df80025a3ae9e80b6e5c8fb4e18a15fdf2684525c26dd67ef3af2b
 ```
 
 ---
 
-## Quick checklist
+## Going live (real charges)
 
-- [ ] Both Supabase migrations run
-- [ ] Supabase URL + service_role key set
-- [ ] Resend domain verified, key set, `from:` address updated
-- [ ] Stripe prices created, secret key set
-- [ ] Stripe webhook endpoint added, signing secret set
-- [ ] `ADMIN_TOKEN` set
-- [ ] `NEXT_PUBLIC_SITE_URL` set to the real domain
-- [ ] Test purchase completed with the `4242` card
+When the test purchase works: flip Stripe to **Live mode**, copy the live
+**Secret key** (`sk_live_...`), and re-run the script with it —
+
+```bash
+STRIPE_SECRET_KEY=sk_live_xxx npm run setup:stripe
+```
+
+— then swap the four `STRIPE_*` values in Vercel for the live ones and redeploy.
+
+## Add email later
+
+The welcome email is off until you set these (signups still save to Supabase
+without it):
+
+1. [resend.com](https://resend.com) → add & **verify your sending domain** (DNS).
+2. Create an API key.
+3. Add to Vercel:
+   ```
+   RESEND_API_KEY=re_...
+   EMAIL_FROM=DadMode <hello@yourdomain.com>     # on your verified domain
+   ```
+
+## Checklist
+
+- [ ] `supabase/setup.sql` run in Supabase
+- [ ] Supabase URL + service_role key in Vercel
+- [ ] `npm run setup:stripe` run; PRICE_* + WEBHOOK_SECRET in Vercel
+- [ ] `STRIPE_SECRET_KEY` in Vercel
+- [ ] `ADMIN_TOKEN` in Vercel
+- [ ] `NEXT_PUBLIC_SITE_URL` set
+- [ ] Redeployed, then test purchase with `4242` card
+- [ ] *(later)* Resend domain verified + `RESEND_API_KEY` / `EMAIL_FROM` set
