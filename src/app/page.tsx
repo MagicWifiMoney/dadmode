@@ -14,7 +14,9 @@ import {
   type Stats,
 } from '@/lib/pregnancy';
 import { weekTodo, nextAppointment } from '@/lib/content';
-import { isPro } from '@/lib/entitlement';
+import { isPro, rememberEmail } from '@/lib/entitlement';
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const TOOLKIT_TEASERS = [
   { title: 'Hospital Bag', desc: 'His, hers, and baby’s — nothing forgotten.', icon: Luggage },
@@ -75,6 +77,9 @@ export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [subscribeError, setSubscribeError] = useState('');
+
+  // First-screen (optional) email capture
+  const [obEmail, setObEmail] = useState('');
 
   // Pro entitlement (read from localStorage after mount to avoid hydration drift)
   const [pro, setProState] = useState(false);
@@ -151,6 +156,19 @@ export default function Home() {
     setDueDate(d);
     setStats(computeStats(d));
     localStorage.setItem(STORAGE_KEY, d.toISOString());
+
+    // Optional first-screen email: remember it for checkout prefill and
+    // subscribe to weekly tips (fire-and-forget — never blocks entering the app).
+    const em = obEmail.trim().toLowerCase();
+    if (EMAIL_RE.test(em)) {
+      rememberEmail(em);
+      setSubmitted(true);
+      void fetch('/api/onboard', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: em, dueDate: d.toISOString() }),
+      }).catch(() => {});
+    }
   };
 
   const resetApp = () => {
@@ -164,6 +182,7 @@ export default function Home() {
     setError('');
     setSubmitted(false);
     setEmail('');
+    setObEmail('');
     setSubscribeError('');
   };
 
@@ -244,6 +263,17 @@ export default function Home() {
               />
             </div>
           )}
+
+          <div className="date-input-wrap ob-email">
+            <label htmlFor="ob-email">Email <span className="opt">(optional — weekly dad tips)</span></label>
+            <input
+              id="ob-email"
+              type="email"
+              placeholder="you@email.com"
+              value={obEmail}
+              onChange={(e) => setObEmail(e.target.value)}
+            />
+          </div>
 
           {error && <p className="form-error" role="alert">{error}</p>}
 

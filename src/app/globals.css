@@ -1006,4 +1006,35 @@
     .compare { display: grid; }
     .promo-grid, .action-row { grid-template-columns: 1fr; }
     .pricing-hero h1, .week-hero h1 { font-size: 1.8rem; }
+    .admin-stats { grid-template-columns: 1fr; }
   }
+
+  /* ==================== ONBOARDING EMAIL ==================== */
+  .ob-email { margin-top: 1rem; }
+  .ob-email .opt { color: var(--text-muted); font-weight: 400; font-size: 0.78rem; }
+
+  /* ==================== ADMIN ==================== */
+  .admin-gate { max-width: 420px; margin: 2rem auto; text-align: center; }
+  .admin-gate h1, .admin-head h1 { font-family: var(--font-fraunces), serif; font-size: 1.8rem; color: var(--cream); margin-bottom: 0.5rem; }
+  .admin-gate .lede { margin-bottom: 1.25rem; }
+  .admin-gate .email-input-row { text-align: left; }
+  .admin-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 1.25rem; }
+  .admin-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 2rem; }
+  .admin-stat {
+    background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius-sm);
+    padding: 1.1rem; text-align: center;
+  }
+  .admin-num { display: block; font-family: var(--font-fraunces), serif; font-size: 2rem; color: var(--gold); }
+  .admin-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); }
+  .admin-table-wrap { margin-bottom: 2rem; }
+  .admin-table-wrap h2 { font-family: var(--font-fraunces), serif; font-size: 1.2rem; color: var(--cream); margin-bottom: 0.75rem; }
+  .admin-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  .admin-table th {
+    text-align: left; color: var(--text-muted); font-weight: 600; font-size: 0.72rem;
+    text-transform: uppercase; letter-spacing: 0.05em; padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--card-border);
+  }
+  .admin-table td { padding: 0.6rem; border-bottom: 1px solid var(--cream-faint); color: var(--text); }
+  .admin-table tr:last-child td { border-bottom: none; }
+  .pill { font-size: 0.7rem; padding: 0.15rem 0.55rem; border-radius: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .pill-ok { background: var(--gold-dim); color: var(--gold); border: 1px solid var(--gold); }
+  .pill-off { background: rgba(232,224,212,0.08); color: var(--text-muted); border: 1px solid var(--cream-faint); }

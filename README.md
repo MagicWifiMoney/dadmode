@@ -38,6 +38,9 @@ erroring. To preview the Pro toolkit locally without paying, build/run with
 
 ## Environment variables
 
+For a full step-by-step go-live walkthrough (Supabase, Resend, Stripe, admin),
+see **[`docs/SETUP.md`](./docs/SETUP.md)**.
+
 See [`.env.example`](./.env.example) for the full list. Copy it to `.env.local`:
 
 ```bash
